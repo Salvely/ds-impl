@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace greeter {
+namespace dsproject {
 
   /**  Language codes to be used with the Greeter class */
   enum class LanguageCode { EN, DE, ES, FR };
@@ -15,7 +15,7 @@ namespace greeter {
 
   public:
     /**
-     * @brief Creates a new greeter
+     * @brief Creates a new dsproject
      * @param name the name to greet
      */
     Greeter(std::string name);
@@ -28,4 +28,4 @@ namespace greeter {
     std::string greet(LanguageCode lang = LanguageCode::EN) const;
   };
 
-}  // namespace greeter
+}  // namespace dsproject

@@ -1,7 +1,7 @@
 #include <fmt/format.h>
-#include <greeter/greeter.h>
+#include <dsproject/dsproject.h>
 
-using namespace greeter;
+using namespace dsproject;
 
 Greeter::Greeter(std::string _name) : name(std::move(_name)) {}
 
