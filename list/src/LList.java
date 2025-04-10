@@ -1,7 +1,43 @@
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-public class LList<T> implements List<T>{
+public class LList<T> implements List<T> {
+    private class Node {
+        Node prev;
+        T data;
+        Node next;
+
+        Node(T data) {
+            this.prev = this;
+            this.data = data;
+            this.next = this;
+        }
+
+        public T getData() {
+            return data;
+        }
+
+        public void setData(T data) {
+            this.data = data;
+        }
+    }
+
+    private Node head;
+    private int size;
+
+    public LList() {
+        head = null;
+        size = 0;
+    }
+
     private class LListIterator implements Iterator<T> {
+        int cur;
+        Node p;
+
+        LListIterator() {
+            cur = 0;
+            p = head;
+        }
 
         /**
          * Returns {@code true} if the iteration has more elements.
@@ -12,7 +48,7 @@ public class LList<T> implements List<T>{
          */
         @Override
         public boolean hasNext() {
-            return false;
+            return cur < size;
         }
 
         /**
@@ -23,7 +59,12 @@ public class LList<T> implements List<T>{
          */
         @Override
         public T next() {
-            return null;
+            if (!hasNext()) {
+                return null;
+            }
+            T val = p.getData();
+            p = p.next;
+            return val;
         }
 
         /**
@@ -38,19 +79,13 @@ public class LList<T> implements List<T>{
          * <p>
          * The behavior of an iterator is unspecified if this method is called
          * after a call to the {@link #forEachRemaining forEachRemaining} method.
-         *
-         * @throws UnsupportedOperationException if the {@code remove}
-         *                                       operation is not supported by this iterator
-         * @throws IllegalStateException         if the {@code next} method has not
-         *                                       yet been called, or the {@code remove} method has already
-         *                                       been called after the last call to the {@code next}
-         *                                       method
-         * @implSpec The default implementation throws an instance of
-         * {@link UnsupportedOperationException} and performs no other action.
          */
         @Override
         public void remove() {
-            Iterator.super.remove();
+            cur--;
+            p.prev.prev.next = p;
+            p.prev = p.prev.prev;
+            size--;
         }
     }
     /**
@@ -60,7 +95,7 @@ public class LList<T> implements List<T>{
      */
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     /**
@@ -70,7 +105,7 @@ public class LList<T> implements List<T>{
      */
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     /**
@@ -78,7 +113,8 @@ public class LList<T> implements List<T>{
      */
     @Override
     public void clear() {
-
+        head = null;
+        size = 0;
     }
 
     /**
@@ -89,18 +125,40 @@ public class LList<T> implements List<T>{
      */
     @Override
     public boolean contains(T x) {
+        if (head == null) {
+            return false;
+        }
+        int n = size;
+        Node p = head;
+        while (n != 0) {
+            if (p.getData() == x) {
+                return true;
+            }
+            p = p.next;
+            n--;
+        }
         return false;
     }
 
     /**
-     * add x to the list
+     * add x to the end of the list
      *
      * @param x the item to be added
      * @return if successfully add x, return true, otherwise return false
      */
     @Override
     public boolean add(T x) {
-        return false;
+        Node newNode = new Node(x);
+        if (head == null) {
+            head = newNode;
+        } else {
+            newNode.next = head;
+            newNode.prev = head.prev;
+            head.prev.next = newNode;
+            head.prev = newNode;
+        }
+        size++;
+        return true;
     }
 
     /**
@@ -112,7 +170,25 @@ public class LList<T> implements List<T>{
      */
     @Override
     public boolean add(int index, T x) {
-        return false;
+        if (index < 0 || index > size) {
+            return false;
+        }
+        Node newNode = new Node(x);
+        if (head == null) {
+            head = newNode;
+        } else {
+            Node p = head;
+            while (index != 0) {
+                index--;
+                p = p.next;
+            }
+            newNode.next = p;
+            newNode.prev = p.prev;
+            p.prev.next = newNode;
+            p.prev = newNode;
+        }
+        size++;
+        return true;
     }
 
     /**
@@ -123,7 +199,25 @@ public class LList<T> implements List<T>{
      */
     @Override
     public boolean remove(T x) {
-        return false;
+        if (head == null) {
+            return false;
+        }
+        Node p = head;
+        int n = size;
+        while (n != 0) {
+            if (p.getData() == x) {
+                break;
+            }
+            p = p.next;
+            n--;
+        }
+        if (n == 0) {
+            return false;
+        }
+        p.next.prev = p.prev;
+        p.prev.next = p.next;
+        size--;
+        return true;
     }
 
     /**
@@ -134,7 +228,15 @@ public class LList<T> implements List<T>{
      */
     @Override
     public T get(int index) {
-        return null;
+        if (index < 0 || index >= size) {
+            return null;
+        }
+        Node p = head;
+        while (index != 0) {
+            p = p.next;
+            index--;
+        }
+        return p.getData();
     }
 
     /**
@@ -145,7 +247,15 @@ public class LList<T> implements List<T>{
      */
     @Override
     public void set(int index, T elem) {
-
+        if (index < 0 || index >= size) {
+            return;
+        }
+        Node p = head;
+        while (index != 0) {
+            p = p.next;
+            index--;
+        }
+        p.setData(elem);
     }
 
     /**
