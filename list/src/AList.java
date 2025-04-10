@@ -71,7 +71,7 @@ public class AList<T> implements List<T> {
          */
         @Override
         public void remove() {
-            AList.this.remove(cur - 1);
+            AList.this.remove(--cur);
         }
     }
 
@@ -168,6 +168,9 @@ public class AList<T> implements List<T> {
      * @param index the index of the item to be removed
      */
     public void remove(int index) {
+        if (isEmpty()) {
+            return;
+        }
         for (int i = index; i < num - 1; i++) {
             arr[i] = arr[i + 1];
         }
@@ -182,6 +185,9 @@ public class AList<T> implements List<T> {
      */
     @Override
     public boolean remove(T x) {
+        if (isEmpty()) {
+            return false;
+        }
         int index = -1;
         for (int i = 0; i < num; i++) {
             if (arr[i] == x) {
@@ -204,7 +210,7 @@ public class AList<T> implements List<T> {
      */
     @Override
     public T get(int index) {
-        if (index >= num) {
+        if (index < 0 || index >= num) {
             throw new IndexOutOfBoundsException();
         }
         return arr[index];
@@ -218,7 +224,7 @@ public class AList<T> implements List<T> {
      */
     @Override
     public void set(int index, T elem) {
-        if (index >=  num) {
+        if (index < 0 || index >=  num) {
             throw new IndexOutOfBoundsException();
         }
         arr[index] = elem;
