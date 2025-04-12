@@ -173,9 +173,17 @@ public class LList<T> implements List<T> {
             return null;
         }
         Node p = head;
-        while (index != 0) {
-            p = p.next;
-            index--;
+        if (index < size / 2) {
+            // search from the head to the end
+            while (index != 0) {
+                p = p.next;
+                index--;
+            }
+        } else {
+            // search from the end to the head
+            for (int i = size - 1; i >= index; i--) {
+                p = p.prev;
+            }
         }
         return p;
     }
