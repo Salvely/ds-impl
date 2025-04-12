@@ -24,15 +24,18 @@ public class LList<T> implements List<T> {
 
     private Node head;
     private int size;
+    private int modCount;
 
     public LList() {
         head = null;
         size = 0;
+        modCount = 0;
     }
 
     private class LListIterator implements Iterator<T> {
         int cur;
         Node p;
+        boolean okToRemove;
 
         LListIterator() {
             cur = 0;
@@ -88,6 +91,7 @@ public class LList<T> implements List<T> {
             size--;
         }
     }
+
     /**
      * get the size of the List
      *
@@ -115,6 +119,65 @@ public class LList<T> implements List<T> {
     public void clear() {
         head = null;
         size = 0;
+        modCount++;
+    }
+
+    /**
+     * a helper method that getNode that data == x
+     *
+     * @param x the data we want to find in the node
+     * @return the node that contains the data
+     */
+    private Node getNode(T x) {
+        if (head == null) {
+            return null;
+        }
+        Node p = head;
+        while (p != null) {
+            if (p.getData() == x) {
+                return p;
+            }
+            p = p.next;
+        }
+        return null;
+    }
+
+    /**
+     * add a node containing data val before node p
+     *
+     * @param p the node to add before
+     * @param val new node value
+     */
+    private void addBefore(Node p, T val) {
+        Node newNode = new Node(val);
+        if (p == null) {
+            p = newNode;
+        } else {
+            newNode.next = p;
+            newNode.prev = p.prev;
+            p.prev.next = newNode;
+            p.prev = newNode;
+        }
+        size++;
+        modCount++;
+    }
+
+    /**
+     * get the node with specified index
+     *
+     * @param index the index of the node
+     * @return the node with specified index
+     */
+    private Node getNode(int index) {
+        if (head == null || index < 0 || index >= size) {
+            return null;
+        }
+        Node p = head;
+        while (index != 0) {
+            p = p.next;
+            index--;
+        }
+        return p;
     }
 
     /**
@@ -125,19 +188,10 @@ public class LList<T> implements List<T> {
      */
     @Override
     public boolean contains(T x) {
-        if (head == null) {
+        if (getNode(x) == null) {
             return false;
         }
-        int n = size;
-        Node p = head;
-        while (n != 0) {
-            if (p.getData() == x) {
-                return true;
-            }
-            p = p.next;
-            n--;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -148,16 +202,7 @@ public class LList<T> implements List<T> {
      */
     @Override
     public boolean add(T x) {
-        Node newNode = new Node(x);
-        if (head == null) {
-            head = newNode;
-        } else {
-            newNode.next = head;
-            newNode.prev = head.prev;
-            head.prev.next = newNode;
-            head.prev = newNode;
-        }
-        size++;
+        addBefore(head, x);
         return true;
     }
 
@@ -170,25 +215,24 @@ public class LList<T> implements List<T> {
      */
     @Override
     public boolean add(int index, T x) {
-        if (index < 0 || index > size) {
+        Node p = getNode(index);
+        if (p == null) {
             return false;
         }
-        Node newNode = new Node(x);
-        if (head == null) {
-            head = newNode;
-        } else {
-            Node p = head;
-            while (index != 0) {
-                index--;
-                p = p.next;
-            }
-            newNode.next = p;
-            newNode.prev = p.prev;
-            p.prev.next = newNode;
-            p.prev = newNode;
-        }
-        size++;
+        addBefore(p, x);
         return true;
+    }
+
+    /**
+     * remove the node p
+     *
+     * @param p the node needs to be removed
+     */
+    private void remove(Node p) {
+        p.prev.next = p.next;
+        p.next.prev = p.prev;
+        size--;
+        modCount++;
     }
 
     /**
@@ -199,24 +243,11 @@ public class LList<T> implements List<T> {
      */
     @Override
     public boolean remove(T x) {
-        if (head == null) {
+        Node p = getNode(x);
+        if (p == null) {
             return false;
         }
-        Node p = head;
-        int n = size;
-        while (n != 0) {
-            if (p.getData() == x) {
-                break;
-            }
-            p = p.next;
-            n--;
-        }
-        if (n == 0) {
-            return false;
-        }
-        p.next.prev = p.prev;
-        p.prev.next = p.next;
-        size--;
+        remove(p);
         return true;
     }
 
@@ -228,14 +259,7 @@ public class LList<T> implements List<T> {
      */
     @Override
     public T get(int index) {
-        if (index < 0 || index >= size) {
-            return null;
-        }
-        Node p = head;
-        while (index != 0) {
-            p = p.next;
-            index--;
-        }
+        Node p = getNode(index);
         return p.getData();
     }
 
@@ -247,15 +271,9 @@ public class LList<T> implements List<T> {
      */
     @Override
     public void set(int index, T elem) {
-        if (index < 0 || index >= size) {
-            return;
-        }
-        Node p = head;
-        while (index != 0) {
-            p = p.next;
-            index--;
-        }
+        Node p = getNode(index);
         p.setData(elem);
+        modCount++;
     }
 
     /**
