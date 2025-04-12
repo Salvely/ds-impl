@@ -304,4 +304,29 @@ public class LList<T> implements List<T> {
     public Iterator<T> iterator() {
         return new LListIterator();
     }
+
+    /**
+     * Get the intersection of 2 sorted list, store the result in l1, and return it
+     *
+     * @param l1 the first sorted list
+     * @param l2 the second sorted list
+     * @param <T> the type of the element
+     */
+    public static <T> LList<T> intersectList(LList<T> l1, LList<T> l2) {
+        LList<T> l3 = new LList<>();
+        for (T item: l2) {
+            if (l1.contains(item)) {
+                l3.add(item);
+            }
+        }
+        return l3;
+    }
+
+    public static <T> void unionList(LList<T> l1, LList<T> l2) {
+        for (T item: l2) {
+            if (!l1.contains(item)) {
+                l1.add(item);
+            }
+        }
+    }
 }
