@@ -1,4 +1,24 @@
 public class LStack<T> implements Stack<T> {
+    private class Node {
+        private T data;
+        private Node next;
+
+        Node(T data) {
+            this.data = data;
+            this.next = null;
+        }
+
+        public T getData() {
+            return data;
+        }
+    }
+
+    private Node head;
+
+    public LStack() {
+        head = null;
+    }
+
     /**
      * push an element onto the stack top
      *
@@ -6,7 +26,13 @@ public class LStack<T> implements Stack<T> {
      */
     @Override
     public void push(T elem) {
-
+        Node newNode = new Node(elem);
+        if (head == null) {
+            head = newNode;
+        } else {
+            newNode.next = head;
+            head = newNode;
+        }
     }
 
     /**
@@ -16,7 +42,9 @@ public class LStack<T> implements Stack<T> {
      */
     @Override
     public T pop() {
-        return null;
+        T val = head.getData();
+        head = head.next;
+        return val;
     }
 
     /**
@@ -26,6 +54,16 @@ public class LStack<T> implements Stack<T> {
      */
     @Override
     public T top() {
-        return null;
+        return head.getData();
+    }
+
+    /**
+     * check if the stack is empty
+     *
+     * @return if the stack is empty, return true, otherwise return false
+     */
+    @Override
+    public boolean isEmpty() {
+        return head == null;
     }
 }

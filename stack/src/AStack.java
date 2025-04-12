@@ -1,4 +1,32 @@
 public class AStack<T> implements Stack<T> {
+    private int capacity;
+    private int base;
+    private int top;
+    private T[] arr;
+
+    public AStack(int capacity) {
+        this.capacity = capacity;
+        this.base = 0;
+        this.top = 0;
+        this.arr = (T[]) new Object[capacity];
+    }
+
+    /**
+     * check if the stack is empty
+     * @return if the stack is empty, return true, otherwise return false
+     */
+    public boolean isEmpty() {
+        return base == top;
+    }
+
+    /**
+     * check if the stack is full
+     * @return if the stack if full, return true, otherwise return false
+     */
+    public boolean isFull() {
+        return top == capacity;
+    }
+
     /**
      * push an element onto the stack top
      *
@@ -6,7 +34,11 @@ public class AStack<T> implements Stack<T> {
      */
     @Override
     public void push(T elem) {
-
+        if (isFull()) {
+            return;
+        }
+        arr[top] = elem;
+        top++;
     }
 
     /**
@@ -16,7 +48,11 @@ public class AStack<T> implements Stack<T> {
      */
     @Override
     public T pop() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        top--;
+        return arr[top];
     }
 
     /**
@@ -26,6 +62,9 @@ public class AStack<T> implements Stack<T> {
      */
     @Override
     public T top() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        return arr[top - 1];
     }
 }

@@ -16,4 +16,10 @@ public interface Stack<T> {
      * @return
      */
     T top();
+
+    /**
+     * check if the stack is empty
+     * @return if the stack is empty, return true, otherwise return false
+     */
+    boolean isEmpty();
 }
