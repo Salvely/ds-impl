@@ -1,3 +1,4 @@
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -36,10 +37,13 @@ public class LList<T> implements List<T> {
         int cur;
         Node p;
         boolean okToRemove;
+        int expectedModCount;
 
         LListIterator() {
             cur = 0;
             p = head;
+            okToRemove = false;
+            expectedModCount = modCount;
         }
 
         /**
@@ -64,9 +68,12 @@ public class LList<T> implements List<T> {
         public T next() {
             if (!hasNext()) {
                 return null;
+            } else if (modCount != expectedModCount) {
+                throw new ConcurrentModificationException();
             }
             T val = p.getData();
             p = p.next;
+            okToRemove = true;
             return val;
         }
 
@@ -85,10 +92,16 @@ public class LList<T> implements List<T> {
          */
         @Override
         public void remove() {
+            if (modCount != expectedModCount) {
+                throw new ConcurrentModificationException();
+            }
+            if (!okToRemove) {
+                throw new IllegalStateException();
+            }
             cur--;
-            p.prev.prev.next = p;
-            p.prev = p.prev.prev;
-            size--;
+            LList.this.remove(p.prev);
+            expectedModCount++;
+            okToRemove = false;
         }
     }
 
