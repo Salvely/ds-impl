@@ -74,7 +74,18 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @return if the data is in the tree, return true, otherwise return false
      */
     private boolean contains(T data, BinaryNode<T> t) {
+        if(t == null) {
+            return false;
+        }
 
+        int compareResult = data.compareTo(t.data);
+        if(compareResult == 0) {
+            return true;
+        } else if(compareResult < 0) {
+            return contains(data, t.left);
+        } else {
+            return contains(data, t.right);
+        }
     }
 
     /**
