@@ -118,6 +118,31 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
     }
 
     /**
+     * Find maximum value in binary search tree
+     *
+     * @return the maximum value of the tree
+     */
+    public T findMax() {
+        return findMax(root).data;
+    }
+
+    /**
+     * A helper method for findMax
+     *
+     * @param t the root of the current BST
+     * @return the maximum value in the BST rooted by t
+     */
+    private BinaryNode<T> findMax(BinaryNode<T> t) {
+        if(t == null) {
+            return null;
+        }
+        while(t.right != null) {
+            t = t.right;
+        }
+        return t;
+    }
+
+    /**
      * Insert the data into the binary search tree
      *
      * @param data the data to be inserted
