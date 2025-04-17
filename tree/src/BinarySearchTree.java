@@ -112,7 +112,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
      *
      * @param data the data to be searched from the binary search tree
      * @param n the current root of the binary search tree to be searched
-     * @return if data is the the binary search tree with root n,
+     * @return if data is in the binary search tree with root n,
      * then return true, otherwise return false
      */
     private boolean contains(T data, Node n) {
@@ -228,7 +228,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
             // insert into the right subtree
             Node right = currentRoot.getRightChild();
             if (right == null) {
-                currentRoot.setRightChild(right);
+                currentRoot.setRightChild(newNode);
             } else {
                 insert(data, right);
             }
@@ -267,26 +267,42 @@ public class BinarySearchTree<T extends Comparable<T>> {
                 // get the rightmost node of the left subtree
                 Node rightmost = left;
                 Node parent = currentRoot;
-                while (rightmost.getRightChild() != null) {
-                    parent = rightmost;
-                    rightmost = rightmost.getRightChild();
+                if(rightmost.getRightChild() == null) {
+                    // replace the node data with that node data
+                    currentRoot.setData(rightmost.getData());
+                    // there's no right child for the rightmost node,
+                    // so replace the parent's left child with rightmost node's left child
+                    parent.setLeftChild(rightmost.getLeftChild());
+                } else {
+                    while (rightmost.getRightChild() != null) {
+                        parent = rightmost;
+                        rightmost = rightmost.getRightChild();
+                    }
+                    // replace the node data with that node data
+                    currentRoot.setData(rightmost.getData());
+                    // and replace that node with its left child
+                    parent.setRightChild(rightmost.getLeftChild());
                 }
-                // replace the node data with that node data
-                currentRoot.setData(rightmost.getData());
-                // and replace that node with its left child
-                parent.setRightChild(rightmost.getLeftChild());
             } else {
                 // get the leftmost node of the right subtree
                 Node leftmost = right;
                 Node parent =  currentRoot;
-                while (leftmost.getLeftChild() != null) {
-                    parent = leftmost;
-                    leftmost = left.getLeftChild();
+                if(leftmost.getLeftChild() == null) {
+                    // replace the node with that node
+                    currentRoot.setData(leftmost.getData());
+                    // there's no left child for the leftmost node,
+                    // so replace the parent's right child with leftmost node's right child
+                    parent.setRightChild(leftmost.getRightChild());
+                } else {
+                    while (leftmost.getLeftChild() != null) {
+                        parent = leftmost;
+                        leftmost = leftmost.getLeftChild();
+                    }
+                    // replace the node with that node
+                    currentRoot.setData(leftmost.getData());
+                    // and replace that node with its right child
+                    parent.setLeftChild(leftmost.getRightChild());
                 }
-                // replace the node with that node
-                currentRoot.setData(leftmost.getData());
-                // and replace that node with its right child
-                parent.setLeftChild(leftmost.getRightChild());
             }
         } else if (ret < 0) {
             Node left = remove(data, currentRoot.getLeftChild());
@@ -303,7 +319,30 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * print the search tree
      */
     public void printTree() {
-        inOrderTraverse(root);
+        printTree(root, 0);
+    }
+
+    /**
+     * A helper method that print the tree from right child to left
+     *
+     * @param currentRoot the current root of the tree
+     * @param depth the depth of the tree
+     */
+    private void printTree(Node currentRoot, int depth) {
+        if (currentRoot == null) {
+            return;
+        }
+        String blank = "-";
+        printTree(currentRoot.getRightChild(), depth + 1);
+        System.out.println(blank.repeat(depth) + currentRoot.getData());
+        printTree(currentRoot.getLeftChild(), depth + 1);
+    }
+
+    /**
+     * Preorder traverse the tree
+     */
+    public void preOrderTraverse() {
+        preOrderTraverse(root);
     }
 
     /**
@@ -315,9 +354,16 @@ public class BinarySearchTree<T extends Comparable<T>> {
         if (currentRoot == null) {
             return;
         }
-        System.out.println(currentRoot.getData());
+        System.out.print(currentRoot.getData() + " ");
         preOrderTraverse(currentRoot.getLeftChild());
         preOrderTraverse(currentRoot.getRightChild());
+    }
+
+    /**
+     * Inorder traverse the tree
+     */
+    public void inOrderTraverse() {
+        inOrderTraverse(root);
     }
 
     /**
@@ -330,8 +376,15 @@ public class BinarySearchTree<T extends Comparable<T>> {
             return;
         }
         inOrderTraverse(currentRoot.getLeftChild());
-        System.out.println(currentRoot.getData());
+        System.out.print(currentRoot.getData() + " ");
         inOrderTraverse(currentRoot.getRightChild());
+    }
+
+    /**
+     * Postorder traverse the tree
+     */
+    public void postOrderTraverse() {
+        postOrderTraverse(root);
     }
 
     /**
@@ -345,7 +398,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
         }
         postOrderTraverse(currentRoot.getLeftChild());
         postOrderTraverse(currentRoot.getRightChild());
-        System.out.println(currentRoot.getData());
+        System.out.print(currentRoot.getData() + " ");
     }
 
     /**
@@ -353,7 +406,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
      *
      * @return if the binary search tree is empty, return true, otherwise return false
      */
-    private boolean isEmpty() {
+    public boolean isEmpty() {
         return root == null;
     }
 
