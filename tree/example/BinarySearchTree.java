@@ -1,3 +1,4 @@
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 /**
@@ -25,7 +26,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
          * @param left the left field value
          * @param right the right field value
          */
-        BinaryNode(T data, BinaryNode<T> left, BinaryNode<T> right {
+        BinaryNode(T data, BinaryNode<T> left, BinaryNode<T> right) {
             this.data = data;
             this.left = left;
             this.right = right;
@@ -107,7 +108,13 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @return the minimum value in the BST
      */
     private BinaryNode<T> findMin(BinaryNode<T> t) {
-
+        if(t == null) {
+            return null;
+        } else if (t.left == null) {
+            return t;
+        } else {
+            return findMin(t.left);
+        }
     }
 
     /**
