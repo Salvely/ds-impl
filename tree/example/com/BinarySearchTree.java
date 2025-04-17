@@ -1,3 +1,5 @@
+package com;
+
 import java.util.NoSuchElementException;
 
 /**
@@ -211,7 +213,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
                 // or with the minimum value in the right subtree
                 // the textbook implementation adopts the following way
                 t.data = findMin(t.right).data;
-                remove(t.data, t.right);
+                t.right = remove(t.data, t.right);
             } else if (t.left != null) {
                 // t only has the left children
                 t = t.left;
@@ -242,7 +244,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
         }
         String blank = "-";
         printTree(currentRoot.right, depth + 1);
-        System.out.println(blank.repeat(depth) + currentRoot.getData());
+        System.out.println(blank.repeat(depth) + currentRoot.data);
         printTree(currentRoot.left, depth + 1);
     }
 }
