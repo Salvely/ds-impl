@@ -159,7 +159,17 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @return root of the new binary search tree after data inserted
      */
     private BinaryNode<T> insert(T data, BinaryNode<T> t) {
+        if(t == null) {
+            return new BinaryNode<>(data, null, null);
+        }
 
+        int compareResult = data.compareTo(t.data);
+        if(compareResult < 0) {
+            t.left = insert(data, t.left);
+        } else if (compareResult > 0) {
+            t.right = insert(data, t.right);
+        }
+        return t;
     }
 
     /**
