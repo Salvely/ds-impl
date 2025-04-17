@@ -1,6 +1,6 @@
 ## Project Structure
 
-- [example](./example) contains the textbook example implementations of some data structure
+- [example](./example/com) contains the textbook example implementations of some data structure
 - [src](./src) contains my implementations of the trees
   - [Tree](./src/Tree.java): Tree interface
   - [Binary Search Tree](./src/BinarySearchTree.java): Binary Search Tree implementation

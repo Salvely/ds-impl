@@ -1,4 +1,3 @@
-import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 /**
@@ -189,22 +188,61 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
      * @return the root of the tree which data is removed from it
      */
     private BinaryNode<T> remove(T data, BinaryNode<T> t) {
+        if(t == null) {
+            return t;
+        }
 
+        int compareResult = data.compareTo(t.data);
+        if(compareResult < 0) {
+            // remove from the left subtree
+            t.left = remove(data, t.left);
+        } else if(compareResult > 0) {
+            // remove from the right subtree
+            t.right = remove(data, t.right);
+        } else {
+            // t is the node to be removed
+            if(t.left != null && t.right != null) {
+                // if t has 2 children
+
+                // replace t with the maximum value in its left subtree
+                // t.data = findMax(t.left).data;
+                // remove(t.data, t.left);
+
+                // or with the minimum value in the right subtree
+                // the textbook implementation adopts the following way
+                t.data = findMin(t.right).data;
+                remove(t.data, t.right);
+            } else if (t.left != null) {
+                // t only has the left children
+                t = t.left;
+            } else {
+                // t only has the right children
+                t = t.right;
+            }
+        }
+        return t;
     }
 
     /**
-     * Print the current tree
+     * print the search tree
      */
     public void printTree() {
-
+        printTree(root, 0);
     }
 
     /**
-     * A helper method that print the current tree, whose root is BinaryNode t
+     * A helper method that print the tree from right child to left
      *
-     * @param t the current root of the tree
+     * @param currentRoot the current root of the tree
+     * @param depth the depth of the tree
      */
-    private void printTree(BinaryNode<T> t) {
-
+    private void printTree(BinaryNode<T> currentRoot, int depth) {
+        if (currentRoot == null) {
+            return;
+        }
+        String blank = "-";
+        printTree(currentRoot.right, depth + 1);
+        System.out.println(blank.repeat(depth) + currentRoot.getData());
+        printTree(currentRoot.left, depth + 1);
     }
 }
